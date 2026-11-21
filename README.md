@@ -19,7 +19,7 @@ Gunakan Node.js 22 (minimal 22.12) atau 24 dan MySQL 8. Buat database `rotex` de
 
 ## Administrator pertama
 
-Jalankan dari lingkungan tepercaya dengan akses ke database. Di PowerShell, masukkan kata sandi melalui prompt tersembunyi.
+Email bawaan administrator pertama adalah `rotex@admin.com`. Di PowerShell, buat akun dari lingkungan yang memiliki akses ke database dan masukkan kata sandi melalui prompt tersembunyi.
 
 ```powershell
 $rotexAdminSecret = Read-Host 'Kata sandi admin (minimal 8 karakter)' -AsSecureString
@@ -27,12 +27,14 @@ $rotexPreviousEncoding = $OutputEncoding
 try {
   $OutputEncoding = [Text.UTF8Encoding]::new($false)
   ([PSCredential]::new('rotex', $rotexAdminSecret)).GetNetworkCredential().Password |
-    npm.cmd run db:admin -- admin@example.com 'Nama Administrator'
+    npm.cmd run db:admin
 } finally {
   $OutputEncoding = $rotexPreviousEncoding
   Remove-Variable rotexAdminSecret, rotexPreviousEncoding
 }
 ```
+
+Untuk memakai email dan nama lain, ganti perintah di blok tersebut dengan `npm.cmd run db:admin -- admin@example.com 'Nama Administrator'`.
 
 ## Pemeriksaan
 

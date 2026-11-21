@@ -6,12 +6,12 @@ import { createPrismaClient } from "../src/lib/prisma-client.mjs";
 import { hashPassword, normalizeEmail } from "../src/features/auth/credentials.mjs";
 import { maximumPasswordLength, minimumPasswordLength } from "../src/features/auth/password-policy.mjs";
 
-const [, , emailArg, nameArg] = process.argv;
+const [, , emailArg = "rotex@admin.com", nameArg = "Admin"] = process.argv;
 const account = z.object({ email: z.email().max(254), name: z.string().trim().min(2).max(100) });
-const parsed = account.safeParse({ email: normalizeEmail(emailArg ?? ""), name: nameArg });
+const parsed = account.safeParse({ email: normalizeEmail(emailArg), name: nameArg });
 
 if (!parsed.success || stdin.isTTY) {
-  console.error("Gunakan npm run db:admin -- EMAIL NAMA. Masukkan kata sandi melalui stdin.");
+  console.error("Gunakan npm run db:admin. Masukkan kata sandi melalui stdin. Untuk email dan nama khusus, tambahkan -- EMAIL NAMA.");
   process.exitCode = 1;
 } else {
   try {
