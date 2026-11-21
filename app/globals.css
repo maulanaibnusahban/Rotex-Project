@@ -14,8 +14,8 @@
   --input-border: #879b94;
   --danger: #9f3737;
   --radius: 0.85rem;
-  --font-heading: "Plus Jakarta Sans Variable", "Segoe UI", sans-serif;
-  --font-body: "Inter Variable", "Segoe UI", sans-serif;
+  --font-heading: "Poppins", "Plus Jakarta Sans Variable", "Segoe UI", sans-serif;
+  --font-body: "Poppins", "Inter Variable", "Segoe UI", sans-serif;
 }
 
 body {
@@ -919,71 +919,73 @@ html:has(.public-header) {
 .portal-layout {
   display: grid;
   min-height: 100svh;
-  grid-template-columns: 15rem minmax(0, 1fr);
+  grid-template-columns: 14.5rem minmax(0, 1fr);
   background: var(--background);
+}
+.portal-layout h1 {
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+.portal-layout h2 {
+  font-size: 1.05rem;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+}
+.portal-layout h3 {
+  font-size: 0.92rem;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+.portal-layout .button {
+  min-height: 2.25rem;
+  padding: 0.38rem 0.85rem;
+  font-size: 0.84rem;
+  border-radius: 0.45rem;
 }
 .portal-sidebar {
   background: var(--surface);
   border-right: 1px solid var(--border);
-  padding: 1.25rem;
+  padding: 0.85rem 0.75rem;
 }
 .portal-sidebar nav {
   display: grid;
   gap: 0.2rem;
-  margin-top: 1.65rem;
+  margin-top: 1.25rem;
 }
 .portal-sidebar nav a {
   display: flex;
-  gap: 0.65rem;
+  gap: 0.55rem;
   align-items: center;
-  min-height: 2.75rem;
-  padding: 0.45rem 0.65rem;
-  border-radius: 0.5rem;
+  min-height: 2.2rem;
+  padding: 0.38rem 0.6rem;
+  border-radius: 0.45rem;
   color: var(--heading);
-  font-size: 0.9rem;
-  font-weight: 650;
+  font-size: 0.83rem;
+  font-weight: 600;
 }
 .portal-sidebar nav a:hover {
   background: var(--tint);
   color: var(--primary);
 }
-.portal-header {
-  min-height: 4.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.7rem clamp(1.1rem, 3vw, 2rem);
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-}
-.portal-header strong,
-.portal-header span {
-  display: block;
-  overflow-wrap: anywhere;
-}
-.portal-header strong {
-  color: var(--heading);
-  font-size: 0.9rem;
-}
-.portal-header span {
-  color: var(--muted);
-  font-size: 0.8rem;
-}
 .portal-main {
-  max-width: 82rem;
+  max-width: 80rem;
   margin-inline: auto;
-  padding: clamp(1.25rem, 3vw, 2rem);
+  padding: 1.5rem clamp(1rem, 2.5vw, 1.85rem);
 }
 .page-heading {
-  margin-bottom: 1.3rem;
+  margin-bottom: 1.1rem;
 }
 .page-heading h1 {
-  font-size: clamp(1.5rem, 3vw, 1.875rem);
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
   overflow-wrap: anywhere;
 }
 .page-heading p {
-  margin-top: 0.4rem;
+  margin-top: 0.25rem;
+  font-size: 0.86rem;
+  color: var(--muted);
 }
 .portal-card {
   min-width: 0;

@@ -34,10 +34,11 @@
 .work-field :is(select, textarea, input) {
   min-width: 0;
   width: 100%;
-  min-height: 2.85rem;
-  padding: 0.55rem 0.7rem;
+  min-height: 2.25rem;
+  padding: 0.38rem 0.65rem;
   border: 1px solid var(--input-border);
-  border-radius: 0.5rem;
+  border-radius: 0.45rem;
+  font-size: 0.84rem;
   color: var(--heading);
   background: var(--surface);
 }
@@ -65,16 +66,23 @@
   display: flex;
   flex-wrap: wrap;
   align-items: end;
-  gap: 0.65rem 0.85rem;
-  padding: 0.85rem 1.15rem;
+  gap: 0.65rem 0.75rem;
+  padding: 0.75rem 1.15rem;
 }
 
 .work-filter {
   border-bottom: 1px solid var(--border);
+  background: #fafbfb;
 }
 
 .work-filter .work-field {
-  flex: 0 1 min(100%, 10.5rem);
+  flex: 0 1 min(100%, 11rem);
+}
+
+.work-filter .button {
+  min-height: 2.25rem;
+  padding: 0.38rem 0.85rem;
+  font-size: 0.82rem;
 }
 
 .work-pagination {
@@ -98,8 +106,8 @@
 }
 
 .calendar {
-  --calendar-hour-height: 3rem;
-  padding: 0 1.15rem 1.15rem;
+  --calendar-hour-height: 2.65rem;
+  padding: 0 1rem 1rem;
 }
 
 .calendar-toolbar,
@@ -113,8 +121,8 @@
 .calendar-toolbar {
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 0.65rem;
-  padding-block: 0.85rem;
+  gap: 0.5rem;
+  padding-block: 0.75rem;
 }
 
 .calendar-period {
@@ -123,8 +131,8 @@
 
 .calendar-period p {
   margin-inline-start: 0.35rem;
-  font-size: 0.95rem;
-  font-weight: 650;
+  font-size: 0.88rem;
+  font-weight: 600;
   color: var(--heading);
 }
 
@@ -132,13 +140,13 @@
 .calendar-switch a {
   display: inline-grid;
   place-items: center;
-  min-width: 2.75rem;
-  min-height: 2.75rem;
+  min-width: 2.15rem;
+  min-height: 2.15rem;
   padding-inline: 0.45rem;
-  border-radius: 0.45rem;
+  border-radius: 0.4rem;
   color: var(--text);
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 0.82rem;
+  font-weight: 500;
 }
 
 .calendar-icon:hover,
@@ -162,18 +170,18 @@
 .calendar-weekday,
 .calendar-timezone {
   align-self: stretch;
-  padding: 0.55rem 0.25rem;
+  padding: 0.45rem 0.2rem;
   background: var(--background);
   color: var(--text);
   text-align: center;
-  font-size: 0.8rem;
-  font-weight: 650;
+  font-size: 0.76rem;
+  font-weight: 500;
 }
 
 .calendar-month-cell {
   position: relative;
   min-width: 0;
-  min-height: 6.15rem;
+  min-height: 4.85rem;
   padding: 0.16rem;
   border-block-start: 1px solid var(--border);
   border-inline-end: 1px solid var(--border);
@@ -196,11 +204,11 @@
 .calendar-date {
   display: inline-grid;
   place-items: center;
-  min-width: 2.25rem;
-  min-height: 2.25rem;
+  min-width: 1.85rem;
+  min-height: 1.85rem;
   color: var(--heading);
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 0.82rem;
+  font-weight: 500;
 }
 
 .calendar-date[aria-current="date"] {
@@ -233,8 +241,8 @@
   border-radius: 0.22rem;
   background: #e0f1e8;
   color: #11543e;
-  font-size: 0.8rem;
-  font-weight: 650;
+  font-size: 0.74rem;
+  font-weight: 500;
   line-height: 1.35;
 }
 

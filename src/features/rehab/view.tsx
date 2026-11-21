@@ -13,5 +13,14 @@ export function Pagination({ page, size, total, query }: { page: number; size: n
 }
 
 export function WorkPanel({ title, children }: { title: string; children: ReactNode }) {
-  return <section className="dashboard-panel work-panel"><header><h2>{title}</h2></header>{children}</section>;
+  return (
+    <section className="dashboard-panel work-panel">
+      <header className="dashboard-panel-header">
+        <div className="panel-title-wrapper">
+          <h2>{title}</h2>
+        </div>
+      </header>
+      {children}
+    </section>
+  );
 }
