@@ -1,12 +1,19 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  experimental: {
-    agentFeedback: true,
+  devIndicators: false,
+  poweredByHeader: false,
+  serverExternalPackages: ["pdfkit"],
+  async headers() {
+    return [{
+      source: "/:path*",
+      headers: [
+        { key: "Referrer-Policy", value: "same-origin" },
+        { key: "X-Content-Type-Options", value: "nosniff" },
+        { key: "X-Frame-Options", value: "DENY" },
+      ],
+    }];
   },
-  cacheComponents: true,
-  partialPrefetching: true,
   turbopack: {
     rules: {
       "*.css": {

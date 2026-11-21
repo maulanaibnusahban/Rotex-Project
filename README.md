@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ROTEX Web Platform
 
-## Getting Started
+Pendamping alat rehabilitasi bahu ROTEX. Dokter memasukkan hasil terapi secara manual.
 
-First, run the development server:
+## Menjalankan proyek
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Gunakan Node.js 22 (minimal 22.12) atau 24 dan MySQL 8. Buat database `rotex` dengan `CREATE DATABASE rotex CHARACTER SET utf8mb4;`. Berikan izin migrasi dan akses tabel kepada akun MySQL yang dipakai proyek. Untuk Laragon dengan `root` tanpa kata sandi di komputer lokal, gunakan `mysql://root@127.0.0.1:3306/rotex` di `.env`.
+
+1. Salin `.env.example` ke `.env` dan isi `DATABASE_URL` untuk database `rotex`.
+2. Jalankan perintah berikut dari direktori proyek.
+
+   ```text
+   npm ci
+   npm run db:migrate
+   npm run dev
+   ```
+
+3. Buka `http://localhost:3000`. Registrasi publik membuat akun pasien dan langsung membuka dashboard. Alamat email dipakai sebagai identitas saat masuk.
+
+## Administrator pertama
+
+Jalankan dari lingkungan tepercaya dengan akses ke database. Di PowerShell, masukkan kata sandi melalui prompt tersembunyi.
+
+```powershell
+$rotexAdminSecret = Read-Host 'Kata sandi admin (minimal 8 karakter)' -AsSecureString
+$rotexPreviousEncoding = $OutputEncoding
+try {
+  $OutputEncoding = [Text.UTF8Encoding]::new($false)
+  ([PSCredential]::new('rotex', $rotexAdminSecret)).GetNetworkCredential().Password |
+    npm.cmd run db:admin -- admin@example.com 'Nama Administrator'
+} finally {
+  $OutputEncoding = $rotexPreviousEncoding
+  Remove-Variable rotexAdminSecret, rotexPreviousEncoding
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Pemeriksaan
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+npm run lint
+npm run typecheck
+npm test
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`AUTH_CLIENT_IP_HEADER` opsional. Atur hanya jika proxy tepercaya selalu mengganti nilai header dengan satu alamat IP klien. Pembatasan percobaan per akun tetap berlaku. Tanpa IP tepercaya, sistem memakai batas bersama untuk tiap jenis aksi autentikasi.
 
-## Learn More
+## Cakupan tahap awal
 
-To learn more about Next.js, take a look at the following resources:
+Landing page satu halaman, MySQL, registrasi pasien dengan sesi langsung, manajemen akun dokter dan pasien, penugasan, kalender dan histori jadwal, jurnal terapi beserta draf dan koreksi, grafik ROM, serta unduhan laporan PDF. Agenda dan laporan menggunakan WIB. Pemberitahuan privasi perlu ditinjau sebelum penggunaan produksi.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Verifikasi email dan pemulihan kata sandi melalui email ditunda pada alur saat ini. Aplikasi dapat dijalankan tanpa konfigurasi SMTP.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Spesifikasi produk ada di [PRD](docs/PRD.md) dan arahan visual di [Design Brief](docs/DESIGN_BRIEF.md).
 
-## Deploy on Vercel
+## Fondasi dashboard rehabilitasi
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Tabel | Relasi dan fungsi |
+| --- | --- |
+| DoctorProfile, PatientProfile | Profil satu-ke-satu untuk akun dokter dan pasien. Migrasi membuat profil untuk akun yang sudah ada. |
+| PatientAssignment | Riwayat hubungan dokter dan pasien, dengan waktu mulai dan berakhir serta akun yang menugaskan. |
+| Appointment, AppointmentChange | Jadwal dokter dan pasien beserta histori perubahan waktu atau status. |
+| TherapySession, RomMeasurement | Jurnal terapi dengan jadwal opsional, serta beberapa pengukuran ROM per sesi. Jurnal berstatus draft atau final. |
+| JournalRevision, AuditLog | Versi rekam klinis dan jejak tindakan sistem. Dashboard admin membaca aktivitas administratif. |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Dashboard menampilkan data sesuai peran. Dokter dan pasien yang berhak melihat jurnal final dapat mengunduh laporan periode dan filter terpilih. Grafik dan PDF memakai pengelompokan pengukuran yang sama.
+
+Langkah awal untuk menguji fitur adalah membuat akun dokter, mendaftarkan pasien, dan menautkan keduanya melalui Penugasan. [Simulasi pasien baru dan kontrol terapi](docs/SIMULASI_ALUR_PASIEN.md) merinci langkah setiap peran dan contoh isian jurnal.

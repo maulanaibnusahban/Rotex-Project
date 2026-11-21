@@ -1,0 +1,34 @@
+nav.public-nav {
+  column-gap: clamp(0.2rem, 0.7vw, 0.75rem);
+}
+
+.public-nav .public-section-link {
+  padding-inline: 0.65rem;
+  border-radius: 0.45rem;
+}
+
+.public-header .public-section-link:is(:hover, :focus-visible) {
+  color: var(--primary);
+  background: var(--background);
+  text-decoration: none;
+}
+
+.public-header :is(.nav-actions, .public-menu-actions) {
+  gap: 0.5rem;
+}
+
+.public-header :is(.nav-actions, .public-menu-actions) > .button {
+  border-radius: 999px;
+}
+
+.button.public-login {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--surface);
+}
+
+.button.public-login:hover {
+  color: var(--primary-hover);
+  background: var(--tint);
+  text-decoration: none;
+}

@@ -1,0 +1,287 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum Role {
+  ADMIN
+  DOCTOR
+  PATIENT
+}
+
+enum AuthTokenPurpose {
+  VERIFY_EMAIL
+  RESET_PASSWORD
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum AppointmentChangeType {
+  RESCHEDULED
+  STATUS_CHANGED
+}
+
+enum JournalStatus {
+  DRAFT
+  FINALIZED
+}
+
+enum ShoulderSide {
+  LEFT
+  RIGHT
+}
+
+enum SessionShoulderSide {
+  LEFT
+  RIGHT
+  BOTH
+}
+
+enum TherapyMode {
+  ACTIVE
+  PASSIVE
+}
+
+enum MovementType {
+  FLEXION
+  EXTENSION
+  ABDUCTION
+  ADDUCTION
+}
+
+enum MeasurementMethod {
+  ROTEX_HANDLE_ANGLE
+  CALIBRATED_SHOULDER_ANGLE
+  GONIOMETER
+  OTHER
+}
+
+enum AuditScope {
+  ADMINISTRATIVE
+  CLINICAL
+}
+
+enum AuditAction {
+  ACCOUNT_CREATED
+  ACCOUNT_UPDATED
+  ACCOUNT_STATUS_CHANGED
+  ASSIGNMENT_STARTED
+  ASSIGNMENT_ENDED
+  APPOINTMENT_CREATED
+  APPOINTMENT_CHANGED
+  JOURNAL_FINALIZED
+  JOURNAL_AMENDED
+  REPORT_EXPORTED
+}
+
+model User {
+  id                   String              @id @default(uuid()) @db.Char(36)
+  email                String              @unique @db.VarChar(254)
+  name                 String              @db.VarChar(100)
+  passwordHash         String
+  role                 Role
+  isActive             Boolean             @default(true)
+  emailVerifiedAt      DateTime?           @db.DateTime(3) // Riwayat sebelum verifikasi email dinonaktifkan.
+  privacyAcceptedAt    DateTime?           @db.DateTime(3)
+  privacyNoticeVersion String?             @db.VarChar(32)
+  createdAt            DateTime            @default(now()) @db.DateTime(3)
+  updatedAt            DateTime            @updatedAt @db.DateTime(3)
+  sessions             Session[]
+  authTokens           AuthToken[]
+  doctorProfile        DoctorProfile?
+  patientProfile       PatientProfile?
+  assignmentsCreated   PatientAssignment[]
+  appointmentChanges   AppointmentChange[]
+  auditLogs            AuditLog[]
+
+  @@index([role, isActive, emailVerifiedAt])
+}
+
+model Session {
+  tokenHash String   @id @db.Char(64)
+  userId    String   @db.Char(36)
+  expiresAt DateTime @db.DateTime(3)
+  createdAt DateTime @default(now()) @db.DateTime(3)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// Tabel lama untuk tautan verifikasi dan pemulihan email.
+model AuthToken {
+  tokenHash String           @id @db.Char(64)
+  userId    String           @db.Char(36)
+  purpose   AuthTokenPurpose
+  expiresAt DateTime         @db.DateTime(3)
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, purpose])
+  @@index([expiresAt])
+}
+
+model AuthRateLimit {
+  key        String   @id @db.Char(64)
+  attempts   Int
+  windowEnds DateTime @db.DateTime(3)
+
+  @@index([windowEnds])
+}
+
+model DoctorProfile {
+  userId          String              @id @db.Char(36)
+  user            User                @relation(fields: [userId], references: [id], onDelete: Restrict)
+  assignments     PatientAssignment[]
+  appointments    Appointment[]
+  therapySessions TherapySession[]
+  revisions       JournalRevision[]
+}
+
+model PatientProfile {
+  userId          String              @id @db.Char(36)
+  user            User                @relation(fields: [userId], references: [id], onDelete: Restrict)
+  assignments     PatientAssignment[]
+  appointments    Appointment[]
+  therapySessions TherapySession[]
+}
+
+model PatientAssignment {
+  id           String         @id @default(uuid()) @db.Char(36)
+  doctorId     String         @db.Char(36)
+  patientId    String         @db.Char(36)
+  assignedById String         @db.Char(36)
+  startedAt    DateTime       @default(now()) @db.DateTime(3)
+  endedAt      DateTime?      @db.DateTime(3)
+  doctor       DoctorProfile  @relation(fields: [doctorId], references: [userId], onDelete: Restrict)
+  patient      PatientProfile @relation(fields: [patientId], references: [userId], onDelete: Restrict)
+  assignedBy   User           @relation(fields: [assignedById], references: [id], onDelete: Restrict)
+
+  @@unique([doctorId, patientId, startedAt])
+  @@index([doctorId, endedAt, startedAt])
+  @@index([patientId, endedAt, startedAt])
+  @@index([assignedById])
+}
+
+model Appointment {
+  id        String              @id @default(uuid()) @db.Char(36)
+  doctorId  String              @db.Char(36)
+  patientId String              @db.Char(36)
+  startAt   DateTime            @db.DateTime(3)
+  endAt     DateTime            @db.DateTime(3)
+  status    AppointmentStatus   @default(SCHEDULED)
+  notes     String?             @db.Text
+  createdAt DateTime            @default(now()) @db.DateTime(3)
+  updatedAt DateTime            @updatedAt @db.DateTime(3)
+  doctor    DoctorProfile       @relation(fields: [doctorId], references: [userId], onDelete: Restrict)
+  patient   PatientProfile      @relation(fields: [patientId], references: [userId], onDelete: Restrict)
+  journal   TherapySession?
+  changes   AppointmentChange[]
+
+  @@unique([id, doctorId, patientId])
+  @@index([doctorId, startAt])
+  @@index([doctorId, status, startAt, endAt])
+  @@index([patientId, status, startAt])
+  @@index([status, startAt])
+}
+
+model AppointmentChange {
+  id            String                @id @default(uuid()) @db.Char(36)
+  appointmentId String                @db.Char(36)
+  actorId       String                @db.Char(36)
+  type          AppointmentChangeType
+  before        Json
+  after         Json
+  createdAt     DateTime              @default(now()) @db.DateTime(3)
+  appointment   Appointment           @relation(fields: [appointmentId], references: [id], onDelete: Restrict)
+  actor         User                  @relation(fields: [actorId], references: [id], onDelete: Restrict)
+
+  @@index([appointmentId, createdAt])
+  @@index([actorId])
+}
+
+model TherapySession {
+  id               String               @id @default(uuid()) @db.Char(36)
+  doctorId         String               @db.Char(36)
+  patientId        String               @db.Char(36)
+  appointmentId    String?              @db.Char(36)
+  therapyAt        DateTime             @db.DateTime(3)
+  shoulderSide     SessionShoulderSide?
+  mode             TherapyMode?
+  durationMinutes  Int?                 @db.UnsignedSmallInt
+  repetitions      Int?                 @db.UnsignedSmallInt
+  chiefComplaint   String?              @db.Text
+  initialCondition String?              @db.Text
+  painScore        Int?                 @db.UnsignedTinyInt
+  painScaleMaximum Int?                 @db.UnsignedTinyInt
+  observations     String?              @db.Text
+  assessment       String?              @db.Text
+  patientResponse  String?              @db.Text
+  followUpPlan     String?              @db.Text
+  postSessionNotes String?              @db.Text
+  status           JournalStatus        @default(DRAFT)
+  version          Int                  @default(1) @db.UnsignedInt
+  finalizedAt      DateTime?            @db.DateTime(3)
+  createdAt        DateTime             @default(now()) @db.DateTime(3)
+  updatedAt        DateTime             @updatedAt @db.DateTime(3)
+  doctor           DoctorProfile        @relation(fields: [doctorId], references: [userId], onDelete: Restrict)
+  patient          PatientProfile       @relation(fields: [patientId], references: [userId], onDelete: Restrict)
+  appointment      Appointment?         @relation(fields: [appointmentId, doctorId, patientId], references: [id, doctorId, patientId], onDelete: Restrict)
+  measurements     RomMeasurement[]
+  revisions        JournalRevision[]
+
+  @@unique([appointmentId, doctorId, patientId])
+  @@index([doctorId, status, updatedAt])
+  @@index([patientId, status, therapyAt])
+}
+
+model RomMeasurement {
+  id           String            @id @default(uuid()) @db.Char(36)
+  sessionId    String            @db.Char(36)
+  movement     MovementType
+  shoulderSide ShoulderSide
+  degrees      Decimal           @db.Decimal(5, 2)
+  method       MeasurementMethod
+  methodNotes  String?           @db.VarChar(255)
+  mode         TherapyMode?
+  session      TherapySession    @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+
+  @@index([sessionId, movement, shoulderSide, method])
+}
+
+model JournalRevision {
+  id              String         @id @default(uuid()) @db.Char(36)
+  sessionId       String         @db.Char(36)
+  authorId        String         @db.Char(36)
+  previousVersion Int            @db.UnsignedInt
+  version         Int            @db.UnsignedInt
+  reason          String         @db.Text
+  before          Json
+  after           Json
+  createdAt       DateTime       @default(now()) @db.DateTime(3)
+  session         TherapySession @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+  author          DoctorProfile  @relation(fields: [authorId], references: [userId], onDelete: Restrict)
+
+  @@unique([sessionId, version])
+  @@index([authorId])
+}
+
+model AuditLog {
+  id        String      @id @default(uuid()) @db.Char(36)
+  actorId   String      @db.Char(36)
+  scope     AuditScope
+  action    AuditAction
+  subjectId String      @db.Char(36)
+  createdAt DateTime    @default(now()) @db.DateTime(3)
+  actor     User        @relation(fields: [actorId], references: [id], onDelete: Restrict)
+
+  @@index([scope, createdAt])
+  @@index([actorId, createdAt])
+}

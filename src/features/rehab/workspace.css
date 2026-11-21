@@ -1,0 +1,460 @@
+.work-panel,
+.work-fields,
+.work-subsection,
+.work-measurements {
+  min-width: 0;
+}
+
+.work-form {
+  display: grid;
+  min-width: 0;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+}
+
+.work-fields {
+  display: grid;
+  gap: 0.85rem;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.work-fields > button {
+  justify-self: start;
+}
+
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.work-field :is(select, textarea, input) {
+  min-width: 0;
+  width: 100%;
+  min-height: 2.85rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--input-border);
+  border-radius: 0.5rem;
+  color: var(--heading);
+  background: var(--surface);
+}
+
+.work-field :is(select, textarea, input):focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.work-field :is(select, textarea, input)[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.work-field :is(select, textarea, input)[aria-invalid="true"]:focus {
+  box-shadow: inset 0 0 0 1px var(--danger);
+}
+
+.work-field textarea {
+  resize: vertical;
+}
+
+.work-filter,
+.work-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.65rem 0.85rem;
+  padding: 0.85rem 1.15rem;
+}
+
+.work-filter {
+  border-bottom: 1px solid var(--border);
+}
+
+.work-filter .work-field {
+  flex: 0 1 min(100%, 10.5rem);
+}
+
+.work-pagination {
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.work-row-actions .text-link {
+  display: inline-block;
+  padding-block: 0.15rem;
+  text-align: left;
+}
+
+.work-row-actions form {
+  margin-top: 0.25rem;
+}
+
+.work-row-actions .feedback {
+  padding: 0.3rem;
+  font-size: 0.8rem;
+}
+
+.calendar {
+  --calendar-hour-height: 3rem;
+  padding: 0 1.15rem 1.15rem;
+}
+
+.calendar-toolbar,
+.calendar-period,
+.calendar-switch {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.calendar-toolbar {
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  padding-block: 0.85rem;
+}
+
+.calendar-period {
+  flex-wrap: wrap;
+}
+
+.calendar-period p {
+  margin-inline-start: 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 650;
+  color: var(--heading);
+}
+
+.calendar-icon,
+.calendar-switch a {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding-inline: 0.45rem;
+  border-radius: 0.45rem;
+  color: var(--text);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.calendar-icon:hover,
+.calendar-switch a:hover,
+.calendar-switch [aria-current="true"] {
+  background: #e8f2ed;
+  color: var(--primary-hover);
+}
+
+.calendar-month,
+.calendar-timeline {
+  display: grid;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+}
+
+.calendar-month {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.calendar-weekday,
+.calendar-timezone {
+  align-self: stretch;
+  padding: 0.55rem 0.25rem;
+  background: var(--background);
+  color: var(--text);
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+.calendar-month-cell {
+  position: relative;
+  min-width: 0;
+  min-height: 6.15rem;
+  padding: 0.16rem;
+  border-block-start: 1px solid var(--border);
+  border-inline-end: 1px solid var(--border);
+}
+
+.calendar-month-cell:nth-child(7n),
+.calendar-hour-column:last-child {
+  border-inline-end: 0;
+}
+
+.calendar-month-cell[data-outside="true"] {
+  background: var(--background);
+}
+
+.calendar-month-cell[data-selected="true"],
+.calendar-day-heading[data-selected="true"] {
+  background: #e8f2ed;
+}
+
+.calendar-date {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  color: var(--heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.calendar-date[aria-current="date"] {
+  color: var(--primary-hover);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.calendar-date:hover {
+  background: #dbece3;
+}
+
+.calendar-month-events {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.calendar-month-count {
+  display: none;
+}
+
+.calendar-event {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-inline: 0.25rem;
+  border-inline-start: 2px solid #176b50;
+  border-radius: 0.22rem;
+  background: #e0f1e8;
+  color: #11543e;
+  font-size: 0.8rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.calendar-event[data-status="COMPLETED"] {
+  border-color: #26759b;
+  background: #e8f3f8;
+  color: #155573;
+}
+
+.calendar-event:is([data-status="CANCELLED"], [data-status="NO_SHOW"]) {
+  border-color: #74858b;
+  background: #ecf0f1;
+  color: #435760;
+}
+
+.calendar-event:hover {
+  text-decoration: underline;
+}
+
+.calendar-more {
+  padding-inline: 0.25rem;
+  color: var(--primary-hover);
+  font-size: 0.8rem;
+}
+
+.calendar-timeline {
+  grid-template-columns: 2.95rem repeat(var(--calendar-days), minmax(0, 1fr));
+}
+
+.calendar-timezone {
+  align-content: end;
+}
+
+.calendar-day-heading {
+  gap: 0.1rem;
+  padding: 0.45rem 0;
+  border-inline-start: 1px solid var(--border);
+  min-width: 0;
+}
+
+.calendar-day-heading small {
+  font-weight: 500;
+  font-size: 0.75rem;
+}
+
+.calendar-time-labels div,
+.calendar-hour {
+  height: var(--calendar-hour-height);
+  border-top: 1px solid var(--border);
+}
+
+.calendar-time-labels div {
+  padding: 0.25rem 0.2rem;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.calendar-hour-column {
+  position: relative;
+  min-width: 0;
+  border-inline-end: 1px solid var(--border);
+}
+
+.calendar-time-labels {
+  border-inline-end: 1px solid var(--border);
+}
+
+.calendar-hour {
+  display: grid;
+  place-items: center;
+}
+
+a.calendar-hour {
+  color: var(--primary-hover);
+}
+
+.calendar-hour span {
+  visibility: hidden;
+}
+
+a.calendar-hour:is(:hover, :focus-visible) {
+  background: #e8f2ed;
+}
+
+a.calendar-hour:is(:hover, :focus-visible) span {
+  visibility: visible;
+}
+
+.calendar-timed-event {
+  position: absolute;
+  z-index: 1;
+}
+
+.calendar :focus-visible {
+  position: relative;
+  z-index: 2;
+  outline-offset: -2px;
+}
+
+.calendar .calendar-timed-event:focus-visible {
+  position: absolute;
+}
+
+.work-subsection,
+.work-measurements {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.work-subsection + .work-subsection {
+  border-top: 1px solid var(--border);
+  padding-top: 0.9rem;
+}
+
+.work-measurement {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+}
+
+.work-measurement-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.work-measurements > button {
+  justify-self: start;
+}
+
+.work-copy {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.work-panel-note {
+  padding: 0.9rem 1.15rem;
+  color: var(--text);
+}
+
+.rom-chart {
+  width: 100%;
+  min-width: 0;
+  height: 16rem;
+  padding: 0.7rem 0.7rem 0;
+}
+
+.rom-chart svg {
+  font-size: 0.75rem;
+}
+
+.rom-dot {
+  cursor: pointer;
+}
+
+.work-chart-note,
+.work-chart-data > summary {
+  padding: 0.75rem 1.15rem;
+  color: var(--muted);
+}
+
+.work-chart-data > summary {
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .calendar {
+    padding-inline: 0.55rem;
+  }
+
+  .calendar-timeline[data-week="true"] {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+
+  .calendar-timeline[data-week="true"] :is(.calendar-timezone, .calendar-time-labels, .calendar-hour-column),
+  .calendar-month-events {
+    display: none;
+  }
+
+  .calendar-month-cell {
+    display: grid;
+    align-content: start;
+    min-height: 3.4rem;
+  }
+
+  .calendar-month-count {
+    display: initial;
+    color: var(--primary-hover);
+    text-align: center;
+    font-size: 0.75rem;
+    line-height: 1;
+  }
+}
+
+@media (max-width: 410px) {
+  .calendar-date {
+    min-width: 0;
+  }
+
+  .calendar-period p {
+    flex-basis: 100%;
+    margin-inline-start: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .work-filter .work-field {
+    flex: 1 1 min(100%, 9rem);
+  }
+
+  .work-table {
+    font-size: 0.83rem;
+  }
+
+  .work-table th,
+  .work-table td {
+    padding-inline: 0.35rem;
+  }
+}
