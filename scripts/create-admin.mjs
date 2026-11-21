@@ -8,7 +8,7 @@ import { createPrismaClient } from "../src/lib/prisma-client.mjs";
 import { hashPassword, normalizeEmail } from "../src/features/auth/credentials.mjs";
 import { maximumPasswordLength, minimumPasswordLength } from "../src/features/auth/password-policy.mjs";
 
-const [, , emailArg = "rotex@admin.com", nameArg = "Admin"] = process.argv;
+const [, , emailArg = "admin@rotex.com", nameArg = "Admin"] = process.argv;
 const account = z.object({ email: z.email().max(254), name: z.string().trim().min(2).max(100) });
 const parsed = account.safeParse({ email: normalizeEmail(emailArg), name: nameArg });
 
@@ -17,7 +17,11 @@ class SetupError extends Error {}
 async function readPassword() {
   if (process.env.ROTEX_ADMIN_PASSWORD) return process.env.ROTEX_ADMIN_PASSWORD;
   if (stdin.isTTY) {
-    const muted = new Writable({ write(_chunk, _encoding, done) { done(); } });
+    const muted = new Writable({
+      write(_chunk, _encoding, done) {
+        done();
+      },
+    });
     const terminal = createInterface({ input: stdin, output: muted, terminal: true, historySize: 0 });
     stderr.write(`Kata sandi admin (minimal ${minimumPasswordLength} karakter): `);
     try {
@@ -42,11 +46,13 @@ async function readPassword() {
 }
 
 async function createAdministrator() {
-  if (!parsed.success) throw new SetupError("Periksa email dan nama admin. Untuk menggantinya, gunakan npm run db:admin -- EMAIL NAMA.");
+  if (!parsed.success)
+    throw new SetupError("Periksa email dan nama admin. Untuk menggantinya, gunakan npm run db:admin -- EMAIL NAMA.");
   const db = createPrismaClient();
   try {
     const existing = await db.user.findUnique({
-      where: { email: parsed.data.email }, select: { role: true, isActive: true },
+      where: { email: parsed.data.email },
+      select: { role: true, isActive: true },
     });
     if (existing) {
       if (existing.role !== Role.ADMIN) throw new SetupError("Email tersebut sudah dipakai oleh akun dengan peran lain.");
@@ -72,8 +78,10 @@ async function createAdministrator() {
 try {
   await createAdministrator();
 } catch (error) {
-  console.error(error instanceof SetupError
-    ? error.message
-    : "Akun administrator gagal dibuat. Periksa koneksi database dan jalankan npm run db:migrate.");
+  console.error(
+    error instanceof SetupError
+      ? error.message
+      : "Akun administrator gagal dibuat. Periksa koneksi database dan jalankan npm run db:migrate.",
+  );
   process.exitCode = 1;
 }
